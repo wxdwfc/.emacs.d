@@ -1,0 +1,165 @@
+;;(require 'package)
+;;(add-to-list 'package-archives
+;;	     '("melpa" . "http://melpa.org/packages/") t)
+
+(require 'package) ;; You might already have this line
+(add-to-list 'package-archives
+	     '("melpa" . "https://melpa.org/packages/"))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize) ;; You might already have this line
+
+(package-initialize)
+
+(when (not package-archive-contents)
+    (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+(add-to-list 'load-path "~/.emacs.d/custom")
+
+(require 'setup-general)
+(if (version< emacs-version "24.4")
+    (require 'setup-ivy-counsel)
+  (require 'setup-helm)
+  (require 'setup-helm-gtags))
+;;  (require 'setup-ggtags)
+  (require 'setup-cedet)
+(require 'setup-editing)
+
+
+;; function-args
+;; (require 'function-args)
+;; (fa-config-default)
+;; (define-key c-mode-map  [(tab)] 'company-complete)
+;; (define-key c++-mode-map  [(tab)] 'company-complete)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (markdown-mode flycheck-ycmd flycheck ycmd company-c-headers company-go sr-speedbar zygospore helm-gtags helm yasnippet ws-butler volatile-highlights use-package undo-tree iedit dtrt-indent counsel-projectile company clean-aindent-mode anzu))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
+;;------------------------------------------------w
+;; set  time
+(display-time) ;
+
+
+;;------------------------------------------------w
+
+;;------------------------------------------------w
+;;paren match
+(show-paren-mode 1)
+
+;;------------------------------------------------w
+
+
+;;------------------------------------------------
+;; This line is set to display the line number
+                                        ; (global-linum-mode 1) ;
+;;------------------------------------------------
+
+
+
+;;------------------------------------------------
+;; set color themes
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(setq molokai-theme-kit t)
+
+(load-theme 'molokai t )
+
+;;------------------------------------------------
+
+
+
+;; set c-j to goto line
+(global-set-key (kbd "C-j") 'goto-line)
+
+(setq
+ helm-gtags-ignore-case t
+ helm-gtags-auto-update t
+ helm-gtags-use-input-at-cursor t
+ helm-gtags-pulse-at-cursor t
+ helm-gtags-prefix-key "\C-cg"
+ helm-gtags-suggested-key-mapping t
+ )
+
+(require 'helm-gtags)
+;; Enable helm-gtags-mode
+(add-hook 'dired-mode-hook 'helm-gtags-mode)
+(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+(define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+(define-key helm-gtags-mode-map (kbd "C-c d") 'helm-gtags-dwim)
+(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+
+;; speed bar
+(setq speedbar-show-unknown-files t)
+
+(setq sr-speedbar-right-side nil) ; put on left side
+
+;; completion
+(require 'cc-mode)
+(require 'company)
+(add-hook 'after-init-hook 'global-company-mode)
+
+;;(setq company-backends (delete 'company-semantic company-backends))
+
+;; it seems my clang has some problems for completion, thus i just disable it.
+(setq company-backends (delete 'company-clang company-backends))
+;;(setq company-backends nil)
+(define-key c-mode-map  [(backtab)] 'company-complete)
+(define-key c++-mode-map  [(backtab)] 'company-complete)
+
+(require 'company-c-headers)
+(add-to-list 'company-backends 'company-c-headers)
+
+(add-to-list 'company-c-headers-path-system "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include")
+
+
+;; headers
+;;(add-to-list 'company-backends 'company-clang)
+;;(add-to-list 'company-backends 'company-c-headers)
+;;(add-to-list 'company-c-headers-path-system "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include")
+
+
+(require 'ycmd)
+(add-hook 'after-init-hook #'global-ycmd-mode)
+
+(set-variable 'ycmd-server-command '("python" "/Users/wxd/local/ycmd/ycmd"))
+(set-variable 'ycmd-global-config "/Users/wxd/dev/lab_project/nocc/.ycm_extra_conf.py")
+
+(setq company-minimum-prefix-length 1)
+(setq company-idle-delay 0.1)
+
+;; keywords using yas
+
+(setq yas-snippet-dirs
+      '("/Users/wxd/.emacs.d/yasnippet/snippets/"
+        ))
+
+(yas-global-mode 1) ;;
+
+
+(require 'flycheck-ycmd)
+(flycheck-ycmd-setup)

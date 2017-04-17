@@ -1,0 +1,1 @@
+("~/.emacs.d/" "~/Documents/dev/lab_project/nocc/" "~/Documents/dev/lab_project/nocc/librdma/" "~/new_world/cs231/assignment2/cs231n/" "~/new_world/cs231/assignment2/" "~/.emacs.d/yasnippet/" "/usr/local/" "~/Documents/dev/lab_project/mlnx4.0/src/MLNX_OFED_SRC-4.0-1.0.1.0/SOURCES/libmlx4-1.2.1mlnx1/src/" "~/Documents/dev/lab_project/mlnx4.0/src/")
